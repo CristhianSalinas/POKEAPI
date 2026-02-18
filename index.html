@@ -1,13 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
 </head>
 <body>
-    <h1>Pronto Pokeapi</h1>
+
+    <div class="container">
+        <h1>📝 Mi Lista de Tareas</h1>
+
+        <div class="input-group">
+            <input type="text" id="taskInput" placeholder="Escribe una tarea...">
+            <button id="addTaskBtn">Agregar</button>
+        </div>
+
+        <ul id="taskList"></ul>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
