@@ -1,38 +1,46 @@
-const lista = document.getElementById('lista');
-const detalle = document.getElementById('detalle');
+const pokedex = document.getElementById('pokedex');
 
-async function cargarLista() {
+async function fetchPokemonList(limit = 50) {
   try {
-    const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=20');
-    const data = await res.json();
-
-    data.results.forEach(pokemon => {
-      const div = document.createElement('div');
-      div.textContent = pokemon.name.toUpperCase();
-      div.classList.add('pokemon-item');
-      div.onclick = () => mostrarDetalle(pokemon.url);
-      lista.appendChild(div);
-    });
-  } catch {
-    detalle.textContent = 'Error cargando Pokémon';
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${limit}`);
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error('Error fetching Pokémon list:', error);
+    return [];
   }
 }
 
-async function mostrarDetalle(url) {
+async function fetchPokemonDetails(url) {
   try {
-    const res = await fetch(url);
-    const p = await res.json();
+    const response = await fetch(url);
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching Pokémon details:', error);
+    return null;
+  }
+}
 
-    detalle.innerHTML = `
-      <h2>${p.name.toUpperCase()}</h2>
-      <img src="${p.sprites.front_default}" alt="${p.name}" />
-      <p><strong>Altura:</strong> ${p.height}</p>
-      <p><strong>Peso:</strong> ${p.weight}</p>
-      <p><strong>HP:</strong> ${p.stats[0].base_stat}</p>
+async function displayPokemonList() {
+  const pokemonList = await fetchPokemonList(50);
+
+  for (const pokemon of pokemonList) {
+    const details = await fetchPokemonDetails(pokemon.url);
+    if (!details) continue;
+
+    const li = document.createElement('li');
+    li.className = 'pokemon-card';
+
+    li.innerHTML = `
+      <img src="${details.sprites.front_default}" alt="${details.name}" />
+      <div class="pokemon-name">${details.name}</div>
     `;
-  } catch {
-    detalle.textContent = 'Error cargando detalles';
+
+    li.onclick = () => alert(`Nombre: ${details.name}\nAltura: ${details.height}\nPeso: ${details.weight}`);
+
+    pokedex.appendChild(li);
   }
 }
 
-cargarLista();
+// Ejecuta al cargar la página
+displayPokemonList();
