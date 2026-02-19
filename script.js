@@ -1,4 +1,7 @@
 const pokedex = document.getElementById('pokedex');
+const modal = document.getElementById('pokemon-modal');
+const modalBody = document.getElementById('modal-body');
+const closeModalBtn = document.getElementById('close-modal');
 
 async function fetchPokemonList(limit = 50) {
   try {
@@ -36,11 +39,34 @@ async function displayPokemonList() {
       <div class="pokemon-name">${details.name}</div>
     `;
 
-    li.onclick = () => alert(`Nombre: ${details.name}\nAltura: ${details.height}\nPeso: ${details.weight}`);
+    li.onclick = () => showPokemonDetails(details);
 
     pokedex.appendChild(li);
   }
 }
+
+function showPokemonDetails(details) {
+  modalBody.innerHTML = `
+    <h2 style="text-transform: capitalize;">${details.name}</h2>
+    <img src="${details.sprites.front_default}" alt="${details.name}" />
+    <p><strong>Altura:</strong> ${details.height}</p>
+    <p><strong>Peso:</strong> ${details.weight}</p>
+    <div class="stats">
+      <h3>Estadísticas:</h3>
+      ${details.stats.map(stat => `
+        <div class="stat">
+          ${stat.stat.name}: ${stat.base_stat}
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  modal.classList.remove('hidden');
+}
+
+closeModalBtn.onclick = () => {
+  modal.classList.add('hidden');
+};
 
 // Ejecuta al cargar la página
 displayPokemonList();
